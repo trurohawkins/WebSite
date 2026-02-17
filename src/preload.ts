@@ -1,5 +1,11 @@
 import Phaser from "phaser";
 
+declare global {
+	interface Window {
+		game?: Phaser.Game;
+	}
+}
+
 class Preload extends Phaser.Scene {
 	constructor() {
 		super("preload");
@@ -7,14 +13,16 @@ class Preload extends Phaser.Scene {
 
 	preload() {
 		//this.load.setBaseURL("/WebSite/");
-		this.welcome = document.getElementById("welcome");
-		this.load.on("progress", (value: number) => {
-			let string = "LOADING";
-			for (let i = 0; i < value * 5; i++) {
-				string += ".";
-			}
-			this.welcome.textContent = string;
-		});
+		const welcome = document.getElementById("welcome");
+		if (welcome) {
+			this.load.on("progress", (value: number) => {
+				let string = "LOADING";
+				for (let i = 0; i < value * 5; i++) {
+					string += ".";
+				}
+				welcome.textContent = string;
+			});
+		}
 		this.load.image("planet", "assets/planet.png");
 		/*
 		this.load.once("complete", () => {
@@ -26,10 +34,8 @@ class Preload extends Phaser.Scene {
 	}
 }
 
-const wrapper = document.getElementById('game-wrapper')!;
-let game: Phaser.Game;
 
-const config: Phaser.Types.Core.GamesConfig = {
+const config: Phaser.Types.Core.GameConfig = {
 	type: Phaser.AUTO,
 	parent: 'phaser-container',
 	scale: {
